@@ -1,0 +1,4 @@
+bot/
+.idea/
+__pycache__/
+constants.py

@@ -1,0 +1,23 @@
+.chatform{
+    /* width: 600px; */
+    /* margin: 0 auto; */
+    margin-top: 50px;
+  }
+  .header-name{
+    font-size: 22px;
+    color: white;
+    padding-top: 17px;
+    padding-right: 9px;
+  }
+  .header-img{
+    max-width: 200px;
+    max-height: 52px;
+    margin-right: 13px;
+  }
+  .row.test{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .fa-sign-out:hover{
+    cursor: pointer;
+  }

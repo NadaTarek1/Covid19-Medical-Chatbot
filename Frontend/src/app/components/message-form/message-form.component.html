@@ -1,0 +1,16 @@
+<div class="row animated  bounceInUp " *ngIf="startChat">
+  <div class="col-md-12 col-sm-12 cl-xs-12">
+    <div class="input-group mb-3  no-margin-bott" >
+      <div class="search" style="margin-right: 0px;">
+        <input style="height: 44px;margin-right: 0px;border-top-right-radius: 0px;border-bottom-right-radius: 0px;"
+          [(ngModel)]="finalTranscript" appAutoFocus type="text" class="form-control chatinput"
+          (keyup.enter)="sendMessage('key')">
+      </div>
+      <span style="    height: 44px;position: relative;top: 15px;border-radius:0px" class="input-group-text"><i
+          [style.color]="rColor" (click)="convertToTxt($event)" class="fa fa-microphone" aria-hidden="true"></i></span>
+      <span disapled (click)="sendMessage('mouse')"
+        style="    height: 44px;position: relative;top: 15px;border-top-left-radius: 0px;border-bottom-left-radius: 0px;    background-color: #de4561;border:0px"
+        class="input-group-text"><i [style.color]="send_icon" class="fa fa-paper-plane" aria-hidden="true"></i></span>
+    </div>
+  </div>
+</div>

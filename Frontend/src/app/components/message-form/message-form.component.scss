@@ -1,0 +1,51 @@
+.chatcontrol{
+  float: left;
+  width: 100%;
+  // border-radius: .25rem; 
+  // border: solid;
+  // border-color: azure;
+
+  .chatinput{
+    // width: 80%;
+    float: left;
+  }
+
+  .chatinput:focus{
+    border: solid;
+    border-color: #c3e7ec;
+  }
+
+  .sendbtn{
+    width: 20%;
+    float: left;
+    border-radius: 0;
+    text-transform: uppercase;
+    border-radius: .25rem;
+  }
+}
+
+
+.search { 
+  position: relative; 
+  // margin: 0 auto ;
+  text-align: center;
+}
+.search input { 
+  text-indent: 30px;
+   font-family:  FontAwesome, sans-serif;
+}
+.search .fa-paper-plane { 
+  position: absolute;
+  top: 30px;
+    left: 91%;
+  font-size: 15px;
+}
+
+input {
+    width: 450px;
+    padding: 5px;
+    margin: 15px;
+    height: 25px;
+  outline:none
+}
+

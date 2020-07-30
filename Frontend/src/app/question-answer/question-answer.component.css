@@ -1,0 +1,42 @@
+input[type=text] {   
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .btn-toolbar {
+    
+  }
+
+ .btn-plus {
+    background-color:dodgerblue ;
+    color: white;
+    border-radius: .25rem;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    
+  }
+
+  .btn-submit {
+    background-color: dodgerblue;
+    color: white;
+    /* padding: 7px 20px; */
+    border-radius: .25rem;
+    
+    /* margin: 7px 20px; */
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 10px;
+  }
+
+  .hovercolor:hover{
+    background-color:rgb(21, 60, 99) ;
+   
+  }
+
+  

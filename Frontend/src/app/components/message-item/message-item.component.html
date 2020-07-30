@@ -1,0 +1,166 @@
+  
+<div *ngIf="firstTime ; else notFirst">
+      <div class="row"><!--row bot msg-->
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div  class="message brand  animated fadeInLeft" data-type="dialog" data-samurai="-1" data-role="welcome,end-flow">
+                  <div class="message-margin">
+                    <div class="message-info visible">
+                      <div class="message-avatar">
+                        <div class=" hu-background-contain hu-width-full hu-height-full" style="background-image: url('assets/images/bot_icon.png');"></div>
+                      </div>
+                      <div class="message-date  hu-s-10 "><span >{{input.timestamp | date : 'dd/MM/yyyy' }}</span></div>
+                    </div>
+                    <div class="message-content">
+                      <div class="message-bubble hu-position-relative hu-background-color_bot-message-background" style="width:auto;transition:0.4s width ease-in-out">
+                      <!--Incase buttons -->
+                     
+
+                      <p *ngIf="start"  class="message-text hu-color_bot-message-text" style="display: inline-block; opacity: 1;animation: c 0.5s ease-in-out;">{{input.message}}</p>
+                        <!-- <div *ngIf="start" [innerHtml]='buttonText'></div> -->
+                      </div>
+                     
+                    </div>
+                  </div>
+            </div>
+           
+        </div>
+        
+      </div><!--end bot msg-->
+        <div  class="row animated fadeInLeft delay-1s"><!--buttons-->
+          <div [ngClass]="{'animated  fadeOutDown ': startChatv === true}" class="col-md-12  " style="   display:flex; padding-top: 30px;padding-left: 75px;">
+              <div   (click)="startChat('start')"  class="hi-box">
+                <p style="color:white">Start</p>
+              </div>
+              <!--Continue Button-->
+              <!-- <div (click)="startChat('continue')" class="hi-box">
+                <p style="color:white">Continue</p>
+              </div> -->
+          </div>
+        </div><!--End Buttons-->
+      </div>
+
+      <script>
+        function getNameBtn(test){
+         alert(test)
+       }
+      </script>
+
+<ng-template #notFirst>
+    <div *ngIf="sender == 'bot';else userl"><!--if Cond-->
+      <div class="row"><!--bot msg-->
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div  class="message brand animate " data-type="dialog" data-samurai="-1" data-role="welcome,end-flow">
+                <div class="message-container">
+                  <div class="message-margin">
+                    <div class="message-info visible">
+                      <div class="message-avatar hu-background-color_contrast-fade none">
+                        <div class="message-avatar_img hu-background-contain hu-width-full hu-height-full" style="background-image: url('assets/images/bot_icon.png');"></div>
+                      </div>
+                      <div class="message-date hu-a-center hu-s-10 hu-color_contrast"><span >{{input.timestamp | date : 'dd/MM/yyyy' }}</span></div>
+                    </div>
+                    <div class="message-content">
+                      <div class="message-bubble hu-position-relative hu-background-color_bot-message-background" style="width:auto;transition:0.4s width ease-in-out">
+                      <img *ngIf="loading" src="../../../assets/images/loading.gif" style="    width: 47px;position: relative;top: -6px;">
+                      <p *ngIf="error" class="message-text hu-color_bot-message-text" style="display: inline-block; opacity: 1;animation: c 2.5s ease-in-out;color:red">something went wrong please try again </p>
+                      <p *ngIf="!btnInclude" class="message-text hu-color_bot-message-text" style="display: inline-block; opacity: 1;animation: c 2.5s ease-in-out;">{{input.message}}</p>
+                      <p  *ngIf="btnInclude"    class="message-text hu-color_bot-message-text" style="display: inline-block; opacity: 1;animation: c 0.5s ease-in-out;">
+                          <span>{{msgBtn}}</span> 
+                          <br> 
+                          <span *ngFor="let item of btns">
+                                <button class="btn chat-btn" (click)="getNameBtn(item.action,item.btnTxt)">{{item.btnTxt}}</button>
+                                <br>
+                              </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              </div>
+        </div>
+      </div><!--end bot msg-->
+    </div><!--end If Cond-->
+
+  
+    <ng-template #userl>
+      <div class="row"><!--user Msg-->
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="message user animate" data-type="text" style="height: auto;margin-bottom:15px">
+                <div class="message-container">
+                  <div class="message-margin">
+                    <div class="message-info visible">
+                      <div class="message-date hu-a-center hu-s-10 hu-color_contrast">
+                        <span>{{input.timestamp | date : 'dd/MM/yyyy' }}</span>
+                      </div>
+                    </div>
+                    <div class="message-content">
+                      <div class="message-bubble hu-position-relative hu-background-color_user-message-background" >
+                        
+                        <p class="message-text hu-color_user-message-text">{{input.message}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div> <!--End User Msg-->
+      
+  
+  
+
+    </ng-template>
+
+</ng-template>
+
+
+<div  *ngIf="loading" class="row" ><!--bot msg loading-->
+  <div class="col-md-12 col-sm-12 col-xs-12">
+      <div  class="message brand animate " data-type="dialog" data-samurai="-1" data-role="welcome,end-flow">
+          <div class="message-container">
+            <div class="message-margin">
+              <div class="message-info visible">
+                <div class="message-avatar hu-background-color_contrast-fade none">
+                  <div class="message-avatar_img hu-background-contain hu-width-full hu-height-full" style="background-image: url('assets/images/bot_icon.png');"></div>
+                </div>
+                <div class="message-date hu-a-center hu-s-10 hu-color_contrast"><span >{{input.timestamp | date : 'dd/MM/yyyy' }}</span></div>
+              </div>
+              <div class="message-content">
+                <div class="message-bubble hu-position-relative hu-background-color_bot-message-background" style="width:auto;transition:0.4s width ease-in-out">
+                <img class="loading" src="assets/images/loading.gif" >
+
+                </div>
+              </div>
+            </div>
+        </div>
+        </div>
+          
+
+  </div>
+</div><!--end bot msg loading-->
+
+<div *ngIf="error" class="row"><!--bot msg error-->
+  <div class="col-md-12 col-sm-12 col-xs-12">
+      <div  class="message brand animate " data-type="dialog" data-samurai="-1" data-role="welcome,end-flow">
+          <div class="message-container">
+            <div class="message-margin">
+              <div class="message-info visible">
+                <div class="message-avatar hu-background-color_contrast-fade none">
+                  <div class="message-avatar_img hu-background-contain hu-width-full hu-height-full" style="background-image: url('assets/images/bot_icon.png');"></div>
+                </div>
+                <div class="message-date hu-a-center hu-s-10 hu-color_contrast"><span >{{input.timestamp | date : 'dd/MM/yyyy' }}</span></div>
+              </div>
+              <div class="message-content">
+                <div class="message-bubble hu-position-relative hu-background-color_bot-message-background" style="width:auto;transition:0.4s width ease-in-out">
+                <!-- <img class="loading" *ngIf="loading" src="assets/images/loading.gif"> -->
+                <p  class="message-text hu-color_bot-message-text" style="display: inline-block; opacity: 1;animation: c 2.5s ease-in-out;color:red">something went wrong please try again </p>
+                </div>
+              </div>
+            </div>
+        </div>
+        </div>
+  </div>
+</div><!--end bot msg error-->
+
+
+
+
+  

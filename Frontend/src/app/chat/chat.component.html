@@ -1,0 +1,17 @@
+<div class="row " style="padding-top: 15px;">
+
+  <img class="header-img" src="assets/images/bot_icon.png">
+  <h1 class="header-name" >Pentavalue</h1>
+  <!-- <h5 (click)="logout()" style="float:right">Logout</h5> -->
+  <div>
+    <h1 (click)="logout()" class="header-name" title="LogOut"><i class="fa fa-sign-out" ></i></h1>
+  </div>
+
+  <div class="col-md-12 col-sm-12 col-xs-12 no-padding-left">
+    <hr style="border-top: 1px solid rgba(253, 253, 253, 0.45);">
+  </div>
+</div>
+<div class=''>
+  <message-list [messages]="messages"></message-list>
+  <message-form [input]="message" [messages]="messages"></message-form>
+</div>

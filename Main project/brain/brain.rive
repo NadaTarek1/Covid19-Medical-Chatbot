@@ -1,0 +1,307 @@
+! global debug = false
+! var name = Doc
+! array confirmation = Alright then|Okay|Got it
+
+// Substitutions
+! sub yea        = yes
+! sub sure       = yes
+! sub why not    = yes
+! sub ok         = yes
+! sub nope       = no
+! sub nah        = no
+
+> object doesuserexist python
+    import utills
+    print("Arguments: ", args)
+    exist = utills.doesUserExist(str(args[0]))
+    if exist:
+        return "true"
+    else:
+        return "false"
+< object
+
+> object registeruser python
+    import utills
+    success = utills.registerUser(str(args[0]), str(args[1]))
+    if success:
+        return "true"
+    else:
+        return "false"
+< object
+
+> object authenticateuser python
+    import utills
+    success = utills.authenticateUser(str(args[0]), str(args[1]))
+    if success:
+        return "true"
+    else:
+        return "false"
+< object
+
+> object doeshaverecordedsymptoms python
+    import utills
+    success = utills.doesHaveRecordedSymptoms(str(args[0]))
+    if success:
+        return "true"
+    else:
+        return "false"
+< object
+
+> object recordsymptom python
+    import utills
+    success = utills.recordSymptom(str(args[0]), str(args[1]))
+< object
+
+> object deletesymptom python
+    import utills
+    success = utills.deleteSymptom(str(args[0]), str(args[1]))
+< object
+
+> object generatesymptomreport python
+    import utills
+    report = utills.generateSymptomReport(str(args[0]))
+    return report
+< object
+
+> object doeshaverecordedaddress python
+    import utills
+    result = utills.doeshaveRecordedAddress(str(args[0]))
+    if result:
+      return "true"
+    else:
+      return "false"
+< object
+
+> object recordaddress python
+    import utills
+    address = ""
+    for i in range(1, len(args)):
+      if i == 1:
+        address += args[i]
+      else:
+        address += " " + args[i]
+    
+    utills.recordAddress(str(args[0]), address)
+< object
+
+> object getnearbyhospitals python
+    import utills
+    result = utills.getNearbyHospitals(str(args[0]))
+    return result
+< object
+
+> object getcovid19report python
+    import utills
+    result = utills.getCOVID19Report()
+    return result
+< object
+
+
+
+> begin
+
+  + request
+  * <get authorization> == undefined => <set authorization=true>{topic=new_user}{ok}
+  - {ok}
+
+< begin
+
+> topic new_user
+
+  + *
+  - Hi! I'm <bot authorization>! You medical chatbot.\s
+  ^ I am here to assist you with the current ongoing COVID-19 breakout. But before we start...\n
+  ^ What is your name?{topic=asked_name}
+
+< topic
+
+> topic asked_name
+  + *
+  * <call>doesuserexist <formal></call> == false => <set name=<formal>>Nice to meet you, <get name>! I see that you are new, please choose a password{topic=asked_password_registration}
+  - <set name=<formal>>Nice to meet you, <get name>! I see that you have been registered already, please enter your password{topic=asked_password_authentication}
+
+< topic
+
+> topic asked_password_registration
+  + *
+  * <call>registeruser <get name> <star1></call> == true => You're all set! Now, let's move on to what I can help you with.{topic=main}\n{@help}
+  - There is a problem registering you.
+
+< topic
+
+> topic asked_password_authentication
+  + *
+  * <call>authenticateuser <get name> <star1></call> == true => You're all set! Now, let's move on to what I can help you with.{topic=main}\n{@help}
+  - Password incorrect, please enter a new password.
+
+< topic
+
+> topic main
+  + [*] help [*]
+  - This is what I can help you with, choose a number from below:\n
+  ^ 1: Check for symptoms\n
+  ^ 2: Find nearby hospitals\n
+  ^ 3: See daily COVID-19 report\n
+  ^ Remember, if you want to get back to this main menu, just tell me!
+
+  + *
+  - I am sorry, I didn't understand that. {@help}
+
+  + #
+  * <star1> == 1 => (@confirmation), let's have a quick checkup.\n{topic=diagnosis}{@start}
+  * <star1> == 2 => (@confirmation), let's get started.\n{topic=address_check}{@address}
+  * <star1> == 3 => (@confirmation), here is the COVID-19 report for today:\n{topic=covid_report}{@report}
+  - {@*}
+
+< topic
+
+> topic diagnosis
+  + start
+  * <call>doeshaverecordedsymptoms <get name></call> == true => You have previously recorded symptoms, do you want to view them?
+  - You have no previously recorded symptoms, so, let's get to it!\n{topic=diagnosis_start}{@start}
+
+  + yes
+  - (@confirmation), here is your symptom report:\n{topic=symptoms_report}{@report}
+
+  + no
+  - Okay then, let's move on to the diagnosis!\n{topic=diagnosis_start}{@start}
+
+  + *
+  - I am sorry, I didn't understand that.
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+
+< topic
+
+> topic diagnosis_start
+  + [*] (start|diagnose) [*]
+  - <set question=0>Do you cough often? Not just any type of cough. A dry cough, where there are no fluids coming cough of your throat when you cough.
+
+  + yes
+  * <get question> == 0 => <add question=1> <call>recordsymptom <get name> dry_cough</call>Do you suffer from a fever? Meaning that you body temprature,\s
+  ^ when measure, is above 38 degrees celsius, symptoms include: sweating, chills and shivering, headache, muscle aches,
+  ^ loss of appetite, irritability, dehydration and general weakness
+  * <get question> == 1 => <add question=1> <call>recordsymptom <get name> fever</call>Do you suffer from fatigue? Meaning that you feel\s
+  ^ tired most of the time, more often than before.
+  * <get question> == 2 => <add question=1> <call>recordsymptom <get name> tiredness</call>Do you suffer from body aches? Meaning that you feel\s
+  ^ random pain in your body
+  * <get question> == 3 => <add question=1> <call>recordsymptom <get name> aches</call>Do you suffer from a sore throat? Meaning that you feel\s
+  ^ pain in your throat.
+  * <get question> == 4 => <add question=1> <call>recordsymptom <get name> sore_throat</call>Do you suffer from diarrhea?\s
+  ^ This is usually categorized by having loose, watery stool.
+  * <get question> == 5 => <add question=1> <call>recordsymptom <get name> diarrhoea</call>Do you suffer from conjunctivitis?\s
+  ^ This is usually categorized by having the white around your eye look pinkish.
+  * <get question> == 6 => <add question=1> <call>recordsymptom <get name> conjunctivitis</call>Do you suffer from headache?\s
+  ^ Symptoms include feeling pain in the face and the head.
+  * <get question> == 7 => <add question=1> <call>recordsymptom <get name> headache</call>Do you suffer from taste or smell loss?\s
+  ^ Meaning that you don't taste or smell thing you used to before.
+  * <get question> == 8 => <add question=1> <call>recordsymptom <get name> loss_of_taste_or_smell</call>Do you suffer from skin rash?\s
+  ^ Meaning that there are parks of your skin that are irritated, swollen, and red.
+  * <get question> == 9 => <add question=1> <call>recordsymptom <get name> skin_rash</call>We're done!\s
+  ^ Here is you symptoms report:\n{topic=symptoms_report}{@report}
+
+
+  + no
+  * <get question> == 0 => <add question=1> <call>deletesymptom <get name> dry_cough</call>Do you suffer from a fever? Meaning that you body temprature,\s
+  ^ when measure, is above 38 degrees celsius, symptoms include: sweating, chills and shivering, headache, muscle aches,
+  ^ loss of appetite, irritability, dehydration and general weakness
+  * <get question> == 1 => <add question=1> <call>deletesymptom <get name> fever</call>Do you suffer from fatigue? Meaning that you feel\s
+  ^ tired most of the time, more often than before.
+  * <get question> == 2 => <add question=1> <call>deletesymptom <get name> tiredness</call>Do you suffer from body aches? Meaning that you feel\s
+  ^ random pain in your body
+  * <get question> == 3 => <add question=1> <call>deletesymptom <get name> aches</call>Do you suffer from a sore throat? Meaning that you feel\s
+  ^ pain in your throat.
+  * <get question> == 4 => <add question=1> <call>deletesymptom <get name> sore_throat</call>Do you suffer from diarrhea?\s
+  ^ This is usually categorized by having loose, watery stool.
+  * <get question> == 5 => <add question=1> <call>deletesymptom <get name> diarrhoea</call>Do you suffer from conjunctivitis?\s
+  ^ This is usually categorized by having the white around your eye look pinkish.
+  * <get question> == 6 => <add question=1> <call>deletesymptom <get name> conjunctivitis</call>Do you suffer from headache?\s
+  ^ Symptoms include feeling pain in the face and the head.
+  * <get question> == 7 => <add question=1> <call>deletesymptom <get name> headache</call>Do you suffer from taste or smell loss?\s
+  ^ Meaning that you don't taste or smell thing you used to before.
+  * <get question> == 8 => <add question=1> <call>deletesymptom <get name> loss_of_taste_or_smell</call>Do you suffer from skin rash?\s
+  ^ Meaning that there are parks of your skin that are irritated, swollen, and red.
+  * <get question> == 9 => <add question=1> <call>deletesymptom <get name> skin_rash</call>We're done!\s
+  ^ Here is you symptoms report:\n{topic=symptoms_report}{@report}
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+  + *
+  - I am sorry, I didn't understand that.
+
+
+
+
+< topic
+
+> topic symptoms_report
+  + [*] (report|diagnosis|show) [*]
+  - <call>generatesymptomreport <get name></call>
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+  + *
+  - I am sorry, I didn't understand that.
+
+< topic
+
+> topic address_check
+  + [*]address[*]
+  * <call>doeshaverecordedaddress <get name></call> == true =>You entered your address before, do you want to use it\s
+  ^ to search for nearby hospitals?
+  - We need your address in order to search for hospitals near it\n{topic=record_address}{@record}
+
+  + yes
+  - (@confirmation), here are the hospitals near you:\n{topic=nearby_hospitals}{@hospital}
+
+  + no
+  - (@confirmation) then, let's record your address!\n{topic=record_address}{@record}
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+  + *
+  - I am sorry, I didn't understand that.
+
+
+< topic
+
+> topic record_address
+  + [*]record[*]
+  - Please insert your address as precisely as possible.
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+  + *
+  - <call>recordaddress <get name> <formal></call>Address recorded! now, let's find hospitals near you.\n{topic=nearby_hospitals}{@hospital}
+
+< topic
+
+
+
+> topic nearby_hospitals
+  + [*]hospital[*]
+  - <call>getnearbyhospitals <get name></call>
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+  + *
+  - I am sorry, I didn't understand that.
+< topic
+
+> topic covid_report 
+  + [*]report[*]
+  - <call>getcovid19report</call>
+
+  + [*](main|menu)[*]{weight=3}
+  - {topic=main}{@help}
+
+  + *
+  - I am sorry, I didn't understand that.
+< topic
