@@ -109,7 +109,7 @@
 > topic new_user
 
   + *
-  - Hi! I'm <bot authorization>! You medical chatbot.\s
+  - Hi! I'm <bot name>! You medical chatbot.\s
   ^ I am here to assist you with the current ongoing COVID-19 breakout. But before we start...\n
   ^ What is your name?{topic=asked_name}
 
@@ -278,8 +278,19 @@
   - {topic=main}{@help}
 
   + *
-  - <call>recordaddress <get name> <formal></call>Address recorded! now, let's find hospitals near you.\n{topic=nearby_hospitals}{@hospital}
+  - <call>recordaddress <get name> <formal></call>Address recorded! Do you want to change it?.\n{topic=change_address}
+< topic
 
+> topic change_address
+
+  + yes
+  - {topic=record_address}{@record}
+  
+  + no
+  - Okay then, here is the result:\n{topic=nearby_hospitals}{@hospital}
+
+  + *
+  - I am sorry, I didn't understand that.\nDo you want to change your address?
 < topic
 
 

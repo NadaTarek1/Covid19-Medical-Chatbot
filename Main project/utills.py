@@ -1,27 +1,26 @@
 import mysql.connector as mysql
 import datetime
-import requests 
+import requests
 import constants
 
-def checkKey(dict, key): 
-      
-    if key in dict.keys(): 
+
+def checkKey(dict, key):
+    if key in dict.keys():
         return True
-    else: 
+    else:
         return False
+
 
 # Replace this with you google places API key in order for the location features to work, or contact me for mine
 googleAPIKey = constants.googleAPIKey
 
-
 # Make sure you put the right credentials hgere connecting to and SQL database that uses the provided .sql file in this repository
 mydb = mysql.connect(
-  host="localhost",
-  user="root",
-  password="12345678",
-  database="medical_chatbot"
+    host="localhost",
+    user="root",
+    password="12345678",
+    database="medical_chatbot"
 )
-
 
 
 def doesUserExist(user):
@@ -30,6 +29,7 @@ def doesUserExist(user):
     cur.execute(qry)
     result = cur.fetchone()
     return False if result is None else True
+
 
 def registerUser(user, password):
     cur = mydb.cursor()
@@ -40,6 +40,7 @@ def registerUser(user, password):
     print(cur.rowcount, "record inserted.")
     return True
 
+
 def authenticateUser(user, password):
     cur = mydb.cursor(dictionary=True)
     qry = "SELECT * FROM `user` WHERE `name`= '{}' AND `password`= {}".format(user, password)
@@ -47,6 +48,7 @@ def authenticateUser(user, password):
     user = cur.fetchone()
     print(user)
     return False if user is None else True
+
 
 def doesHaveRecordedSymptoms(user):
     cur = mydb.cursor(dictionary=True)
@@ -56,6 +58,7 @@ def doesHaveRecordedSymptoms(user):
     print(user)
     print("Count: ", count)
     return False if count == 0 else True
+
 
 def recordSymptom(user, symptom):
     try:
@@ -80,16 +83,19 @@ def deleteSymptom(user, symptom):
     except mysql.Error as err:
         print("Something went wrong: {}".format(err))
 
+
 def generateSymptomReport(user):
     try:
         cur = mydb.cursor(dictionary=True)
 
-        qry = "SELECT COUNT(*) FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'common'".format(user)
+        qry = "SELECT COUNT(*) FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'common'".format(
+            user)
         cur.execute(qry)
         patientCommonSymptomsCount = cur.fetchone()['COUNT(*)']
         print(patientCommonSymptomsCount)
 
-        qry = "SELECT COUNT(*) FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'uncommon'".format(user)
+        qry = "SELECT COUNT(*) FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'uncommon'".format(
+            user)
         cur.execute(qry)
         patientUncommonSymptomsCount = cur.fetchone()['COUNT(*)']
         print(patientUncommonSymptomsCount)
@@ -104,23 +110,27 @@ def generateSymptomReport(user):
         totalUncommonSymptomsCount = cur.fetchone()['COUNT(*)']
         print(totalUncommonSymptomsCount)
 
-        qry = "SELECT * FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'common'".format(user)
+        qry = "SELECT * FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'common'".format(
+            user)
         cur.execute(qry)
         commonSymptoms = cur.fetchall()
 
-        qry = "SELECT * FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'uncommon'".format(user)
+        qry = "SELECT * FROM `patient_symptoms` INNER JOIN `symptoms` ON `symptom_name` = `name` WHERE `patient_name` = '{}' AND `type` = 'uncommon'".format(
+            user)
         cur.execute(qry)
         uncommonSymptoms = cur.fetchall()
 
         report = ''
         report += 'SYMPTOM REPORT FOR USER: {}'.format(user) + '\n'
         report += '===================================\n'
-        report += 'You have {} out of {} common  symptoms:\n\n'.format(patientCommonSymptomsCount, totalCommonSymptomsCount)
+        report += 'You have {} out of {} common  symptoms:\n\n'.format(patientCommonSymptomsCount,
+                                                                       totalCommonSymptomsCount)
         for x in commonSymptoms:
             report += 'SYMPTOM: {}'.format(x['descriptive_name']) + ':\n'
             report += x['description'] + '\n\n'
         report += '\n'
-        report += 'You have {} out of {} uncommon  symptoms:\n\n'.format(patientUncommonSymptomsCount, totalUncommonSymptomsCount)
+        report += 'You have {} out of {} uncommon  symptoms:\n\n'.format(patientUncommonSymptomsCount,
+                                                                         totalUncommonSymptomsCount)
         for x in uncommonSymptoms:
             report += 'SYMPTOM: {}'.format(x['descriptive_name']) + ':\n'
             report += x['description'] + '\n\n'
@@ -136,12 +146,14 @@ def generateSymptomReport(user):
     except mysql.Error as err:
         print("Something went wrong: {}".format(err))
 
+
 def doeshaveRecordedAddress(user):
     cur = mydb.cursor(dictionary=True)
     qry = "SELECT `address` FROM `user` WHERE `name` = '{}'".format(user)
     cur.execute(qry)
     address = cur.fetchone()['address']
     return True if address != None else False
+
 
 def recordAddress(user, address):
     cur = mydb.cursor()
@@ -150,29 +162,31 @@ def recordAddress(user, address):
     mydb.commit()
     return True
 
+
 def getNearbyHospitals(user):
     cur = mydb.cursor(dictionary=True)
     qry = "SELECT `address` FROM `user` WHERE `name` = '{}'".format(user)
     cur.execute(qry)
     address = cur.fetchone()['address']
+    print("Address: " + address)
 
     URL = "https://maps.googleapis.com/maps/api/geocode/json?"
-    PARAMS = {'key':googleAPIKey, 'address':str(address), 'components': 'country:EG'} 
-    r = requests.post(url = URL, params = PARAMS)
-    data = r.json() 
+    PARAMS = {'key': googleAPIKey, 'address': str(address), 'components': 'country:EG'}
+    r = requests.post(url=URL, params=PARAMS)
+    data = r.json()
 
     if data['status'] == 'ZERO_RESULTS':
         return "No hospitals found near your location"
-    
+
     lat = data['results'][0]['geometry']['location']['lat']
     lng = data['results'][0]['geometry']['location']['lng']
 
     location = str(lat) + "," + str(lng)
 
     URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-    PARAMS = {'key':googleAPIKey, 'location':location, 'radius': 5000, 'type':'hospital'} 
-    r = requests.post(url = URL, params = PARAMS)
-    data = r.json() 
+    PARAMS = {'key': googleAPIKey, 'location': location, 'radius': 5000, 'type': 'hospital'}
+    r = requests.post(url=URL, params=PARAMS)
+    data = r.json()
 
     result = ""
     result += 'LOCATING NEARBY HOSPITAL FOR USER: {}, ADDRESS: {}'.format(user, address) + '\n'
@@ -185,32 +199,28 @@ def getNearbyHospitals(user):
         if checkKey(hospital, 'opening_hours'):
             result += 'OPEN NOW: {}'.format('Yes' if hospital['opening_hours']['open_now'] else 'No') + "\n"
         result += '\n'
-    
+
     result += '===================================\n'
     return result
 
+
 def getCOVID19Report():
     URL = "https://api.covid19api.com/summary"
-    r = requests.get(url = URL)
+    r = requests.get(url=URL)
     data = r.json()
     print(data)
     result = ""
-    result += 'Latest COVID-19 report for today:\n'
-    result += 'World:\nNew confirmed: {}, Total confirmed: {}\nNew death: {}, Total death: {}\nNew recovered: {}, Total recovered: {}'.format(data['Global']['NewConfirmed'], data['Global']['TotalConfirmed'], data['Global']['NewDeaths'], data['Global']['TotalDeaths'], data['Global']['NewRecovered'], data['Global']['TotalRecovered'])
+    result += 'Latest COVID-19 report:\n'
+    result += 'World:\nNew confirmed: {}, Total confirmed: {}\nNew death: {}, Total death: {}\nNew recovered: {}, Total recovered: {}'.format(
+        data['Global']['NewConfirmed'], data['Global']['TotalConfirmed'], data['Global']['NewDeaths'],
+        data['Global']['TotalDeaths'], data['Global']['NewRecovered'], data['Global']['TotalRecovered'])
     result += '\n\n'
 
     for country in data['Countries']:
         if country['Country'] == 'Egypt':
             print('Test')
-            result += 'Egypt:\nNew confirmed: {}, Total confirmed: {}\nNew death: {}, Total death: {}\nNew recovered: {}, Total recovered: {}'.format(country['NewConfirmed'], country['TotalConfirmed'], country['NewDeaths'], country['TotalDeaths'], country['NewRecovered'], country['TotalRecovered'])
-    
+            result += 'Egypt:\nNew confirmed: {}, Total confirmed: {}\nNew death: {}, Total death: {}\nNew recovered: {}, Total recovered: {}'.format(
+                country['NewConfirmed'], country['TotalConfirmed'], country['NewDeaths'], country['TotalDeaths'],
+                country['NewRecovered'], country['TotalRecovered'])
+
     return result
-
-
-
-
-
-
-
-
-

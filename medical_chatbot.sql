@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 30, 2020 at 09:42 AM
+-- Generation Time: Aug 23, 2020 at 07:32 PM
 -- Server version: 8.0.21
 -- PHP Version: 7.3.11
 
@@ -32,26 +32,6 @@ CREATE TABLE `patient_symptoms` (
   `patient_name` varchar(200) NOT NULL,
   `symptom_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `patient_symptoms`
---
-
-INSERT INTO `patient_symptoms` (`patient_name`, `symptom_name`) VALUES
-('Ahmed', 'aches'),
-('Nada', 'aches'),
-('Nada', 'conjunctivitis'),
-('Ahmed', 'diarrhoea'),
-('Nada', 'diarrhoea'),
-('Nada', 'dry_cough'),
-('Ahmed', 'headache'),
-('Ahmed', 'loss_of_taste_or_smell'),
-('Nada', 'loss_of_taste_or_smell'),
-('Ahmed', 'skin_rash'),
-('Nada', 'skin_rash'),
-('Ahmed', 'sore_throat'),
-('Nada', 'sore_throat'),
-('Nada', 'tiredness');
 
 -- --------------------------------------------------------
 
@@ -95,14 +75,6 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`name`, `password`, `address`) VALUES
-('Ahmed', '123456', '53 Ibn Al Nafeis'),
-('Nada', '123456\r\n', NULL);
-
---
 -- Indexes for dumped tables
 --
 
@@ -111,7 +83,7 @@ INSERT INTO `user` (`name`, `password`, `address`) VALUES
 --
 ALTER TABLE `patient_symptoms`
   ADD UNIQUE KEY `patient_name` (`patient_name`,`symptom_name`),
-  ADD KEY `symtom_owned` (`symptom_name`);
+  ADD KEY `symptom_owned` (`symptom_name`);
 
 --
 -- Indexes for table `symptoms`
@@ -135,8 +107,8 @@ ALTER TABLE `user`
 -- Constraints for table `patient_symptoms`
 --
 ALTER TABLE `patient_symptoms`
-  ADD CONSTRAINT `symptom_owner` FOREIGN KEY (`patient_name`) REFERENCES `user` (`name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `symtom_owned` FOREIGN KEY (`symptom_name`) REFERENCES `symptoms` (`name`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `symptom_owned` FOREIGN KEY (`symptom_name`) REFERENCES `symptoms` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `symptom_owner` FOREIGN KEY (`patient_name`) REFERENCES `user` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

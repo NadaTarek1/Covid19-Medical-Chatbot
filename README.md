@@ -1,5 +1,10 @@
 # Medical Chatbot
 
+## Collaborators:
+- Nada Tarek Ahmed Abdalla - ID: 16P6053
+- Ahmed Hesham Mohamed Al-Saey - ID: 16P6000
+
+## Repository description
 This repository contains a chatbot made with RiveScript, Flask, MySQL, and REACT
 
 Credits to [this](https://github.com/valoro/bot_front?fbclid=IwAR2JfYS-Hn66RGL5GJYoJ-ZSx0NOpbBzfKYT3k0SLXRBt6_eR1dENCf7Irk) repository for the frontend of the chatbot, and [this](https://github.com/valoro/attendance_bot?fbclid=IwAR3mu2DqC5AZffo9fovhmptl96MojM2rqaCr6Xs-gXVgpVQQwRpsEAu4Mds) repository for the base Python/Flask project that I built on.
