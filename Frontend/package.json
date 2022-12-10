@@ -26,7 +26,7 @@
     "angular-file-upload": "^2.5.0",
     "bootstrap": "^4.2.1",
     "core-js": "^2.4.1",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "ng-sidebar": "^8.0.0",
